@@ -22,15 +22,9 @@
 
 #include <atomic>
 
-#include <artist/artist_log.h>
-#include <artist/injection/injection_visitor.h>
-#include <artist/env/java_env.h>
-#include <artist/injection/primitives.h>
-#include <artist/injection/boolean.h>
-#include <artist/injection/integer.h>
-#include <artist/injection/float.h>
-#include <artist/verbose_printer.h>
-#include <artist/injection/char.h>
+#include <artist/api/io/artist_log.h>
+#include <artist/api/env/java_env.h>
+#include <artist/api/injection/primitives.h>
 
 #include "instrumentation_pass.h"
 #include "codelib.h"
@@ -44,21 +38,18 @@ using std::sort;
 
 using art::Target;
 using art::Parameter;
-using art::Char;
 using art::InjectionTarget ;
 
-vector<Injection> HTraceArtist::ProvideInjections() const {
+vector<shared_ptr<const Injection>> HTraceArtist::ProvideInjections() const {
   vector<shared_ptr<const Parameter>> params;
-  auto param = make_shared<const Char>();
-  params.push_back(param);
 
-  vector<const Target> targets;
-  const Target target(Target::GENERIC_TARGET, InjectionTarget::METHOD_END);
+  vector<shared_ptr<const Target>> targets;
+  auto target = make_shared<const Target>(Target::GENERIC_TARGET, InjectionTarget::METHOD_END);
   targets.push_back(target);
 
-  Injection injection(TraceCodeLib::TRACELOG, params, targets);
+  auto injection = make_shared<const Injection>(TraceCodeLib::TRACELOG, params, targets);
 
-  vector<Injection> results;
+  vector<shared_ptr<const Injection>> results;
   results.push_back(injection);
   return results;
 }

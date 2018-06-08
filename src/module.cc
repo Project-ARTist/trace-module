@@ -19,7 +19,7 @@
  *
  */
 
-#include <artist/filtering/method_name_filters.h>
+#include <artist/api/filtering/method_name_filters.h>
 
 #include "module.h"
 #include "instrumentation_pass.h"
@@ -28,22 +28,35 @@
 using std::make_shared;
 using std::unique_ptr;
 
-shared_ptr <HArtist> TraceModule::createPass(const MethodInfo &method_info) const {
-    return make_shared<HTraceArtist>(method_info);
+using art::MethodNameBlacklist;
+using art::FilesystemHelper;
+
+
+HArtist *TraceModule::createPass(const MethodInfo &method_info) const {
+  return new(method_info.GetGraph()->GetArena()) HTraceArtist(method_info);
 }
 
 shared_ptr<const CodeLib> TraceModule::createCodeLib() const {
-    return make_shared<TraceCodeLib>();
+  return make_shared<TraceCodeLib>();
 }
 
 // skip android support lib ui methods since they bloat up the log
-unique_ptr <Filter> TraceModule::getMethodFilter() const {
-    const vector<const string> ui = {"android.support."};
-    return unique_ptr<Filter>(new art::BlacklistFilter(ui));
+unique_ptr<Filter> TraceModule::getMethodFilter() const {
+  const vector<const string> blackListDefinition = {
+      "android.support.",
+  };
+  return unique_ptr<Filter>(new MethodNameBlacklist(blackListDefinition));
 }
 
-// the class factories
+TraceModule::TraceModule(shared_ptr<const FilesystemHelper> fs) : Module(fs) {}
 
-extern "C" shared_ptr <art::Module> create() {
-    return make_shared<TraceModule>();
+
+// the class factory
+
+extern "C" shared_ptr <art::Module> create(shared_ptr<const FilesystemHelper> fshelper) {
+  return make_shared<TraceModule>(fshelper);
+}
+
+extern "C" art::ModuleId get_id() {
+  return "saarland.cispa.artist.modules.trace";
 }

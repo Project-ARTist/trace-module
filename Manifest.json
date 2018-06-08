@@ -1,8 +1,8 @@
 {
   "manifest_version": 1,
-  "package_name": "saarland.cispa.artist.module.trace",
+  "package_name": "saarland.cispa.artist.modules.trace",
   "name": "Trace Module",
-  "description": "This module logs all called methods.",
+  "description": "This module logs the names of all called methods to logcat. ",
   "author": "Sebastian Weisgerber <weisgerber@cispa.saarland>, Oliver Schranz <oliver.schranz@cispa.saarland>, Parthipan Ramesh <parthipan.ramesh@cispa.saarland>",
   "version": 1
 }

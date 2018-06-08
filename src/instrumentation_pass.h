@@ -23,14 +23,14 @@
 #ifndef ART_MODULES_TRACE_TRACE_ARTIST_H_
 #define ART_MODULES_TRACE_TRACE_ARTIST_H_
 
-#include <artist/injection/universal_artist.h>
+#include <artist/api/injection/injection_artist.h>
 
-using art::HUniversalArtist;
+using art::HInjectionArtist;
 using art::MethodInfo;
 using art::OptimizingCompilerStats;
 using art::Injection;
 
-class HTraceArtist : public HUniversalArtist {
+class HTraceArtist : public HInjectionArtist {
  public:
   explicit HTraceArtist(
       const MethodInfo& method_info,
@@ -39,7 +39,7 @@ class HTraceArtist : public HUniversalArtist {
 #endif
       const char* pass_name = "TraceArtist"
       , OptimizingCompilerStats* stats = nullptr)
-      : HUniversalArtist(method_info
+      : HInjectionArtist(method_info
 #ifdef BUILD_MARSHMALLOW
       , is_in_ssa_form
 #endif
@@ -48,7 +48,7 @@ class HTraceArtist : public HUniversalArtist {
     // Nothing
   }
 
-  vector<Injection> ProvideInjections() const OVERRIDE;
+  vector<shared_ptr<const Injection>> ProvideInjections() const OVERRIDE;
 };
 
 #endif  // ART_MODULES_TRACE_TRACE_ARTIST_H_
