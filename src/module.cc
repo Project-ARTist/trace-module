@@ -33,7 +33,8 @@ using art::FilesystemHelper;
 
 
 HArtist *TraceModule::createPass(const MethodInfo &method_info) const {
-  return new(method_info.GetGraph()->GetArena()) HTraceArtist(method_info);
+//  return new(method_info.GetGraph()->GetArena()) HTraceArtist(method_info);
+  return new HTraceArtist(method_info);
 }
 
 shared_ptr<const CodeLib> TraceModule::createCodeLib() const {
